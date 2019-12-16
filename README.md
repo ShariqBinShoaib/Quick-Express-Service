@@ -1,5 +1,5 @@
 # Quick-Express-Service
-A desktop application for a Courier Service company.
+A desktop application for a Courier Service company. Built only for admin's use.
 
 ## Screenshots of Application:
 
