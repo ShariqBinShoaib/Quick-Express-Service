@@ -1,5 +1,16 @@
 # Quick-Express-Service
-A desktop application for a Courier Service company. Built only for admin's use.
+A desktop application for a Courier Service company. Built for admin's use only.
+
+## Project Features
+- Login/SignUp
+- Add/Update/Delete delivery packages, riders and vendors
+- Calculate Rider's salary
+- Analyze Income
+
+### Dependencies
+- mssql-jdbc-7.0.0.jre8
+- jfreechart-1.0.19
+- jcalendar-1.4
 
 ## Screenshots of Application:
 
