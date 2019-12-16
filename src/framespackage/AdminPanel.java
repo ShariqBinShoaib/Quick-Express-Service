@@ -61,18 +61,25 @@ public class AdminPanel extends javax.swing.JFrame
         initComponents();
         dbc = new DBConnection();
         dbc.connection(this);
+        dbc.getRiderNames(this);
+        dbc.RiderSalary(this);
+        dbc.deleteDuplicateData(this);
+        setBarChartData();
+        setBarChart();
         btnSearchCustomerName.requestFocus();
         GregorianCalendar gc = new GregorianCalendar();
         month = gc.get(Calendar.MONTH) + 1;
         year = gc.get(Calendar.YEAR);
         bindDataToTable(month, year);
-        btnDeletePackage.setEnabled(false);
         if (tbDetails.getRowCount() > 0)
         {
             btnHomeAddRider.setEnabled(true);
             btnDeletePackage.setEnabled(true);
             btnDeleteAllPackages.setEnabled(true);
         }
+
+        insertDatainMonthlyIncome(month, year);
+        
         this.username = username;
         this.password = password;
     }
@@ -204,7 +211,6 @@ public class AdminPanel extends javax.swing.JFrame
         btnDeleteRider = new javax.swing.JButton();
         btnSalaries = new javax.swing.JButton();
         pnlMonthlyIncome = new javax.swing.JPanel();
-        jLabel8 = new javax.swing.JLabel();
         pnlBarChart = new javax.swing.JPanel();
         jLabel30 = new javax.swing.JLabel();
         jLabel31 = new javax.swing.JLabel();
@@ -221,6 +227,7 @@ public class AdminPanel extends javax.swing.JFrame
         jLabel7 = new javax.swing.JLabel();
         lblPreviousMonth = new javax.swing.JLabel();
         jLabel36 = new javax.swing.JLabel();
+        jSeparator13 = new javax.swing.JSeparator();
         pnlLogo = new javax.swing.JPanel();
         jLabel9 = new javax.swing.JLabel();
         lblHeading = new javax.swing.JLabel();
@@ -495,7 +502,8 @@ public class AdminPanel extends javax.swing.JFrame
 
         lblincome.setFont(new java.awt.Font("Segoe UI Light", 0, 20)); // NOI18N
         lblincome.setForeground(new java.awt.Color(255, 255, 255));
-        lblincome.setText("Income Details");
+        lblincome.setIcon(new javax.swing.ImageIcon(getClass().getResource("/framespackage/Money.png"))); // NOI18N
+        lblincome.setText("  Income Details");
         lblincome.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         lblincome.addMouseListener(new java.awt.event.MouseAdapter()
         {
@@ -504,7 +512,7 @@ public class AdminPanel extends javax.swing.JFrame
                 lblincomeMouseClicked(evt);
             }
         });
-        pnlMenu.add(lblincome, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 570, 130, -1));
+        pnlMenu.add(lblincome, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 570, 160, 40));
 
         pnlMain.add(pnlMenu);
         pnlMenu.setBounds(0, -1, 210, 640);
@@ -564,12 +572,12 @@ public class AdminPanel extends javax.swing.JFrame
             tbDetails.getColumnModel().getColumn(9).setPreferredWidth(40);
         }
 
-        pnlHome.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 105, 960, 350));
+        pnlHome.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 105, 1050, 350));
 
         monthChooser.setForeground(new java.awt.Color(255, 255, 255));
         monthChooser.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
-        pnlHome.add(monthChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 0, 140, 30));
-        pnlHome.add(yearChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 0, 90, 30));
+        pnlHome.add(monthChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, 140, 30));
+        pnlHome.add(yearChooser, new org.netbeans.lib.awtextra.AbsoluteConstraints(820, 0, 90, 30));
 
         btnFetchData.setBackground(new java.awt.Color(102, 153, 255));
         btnFetchData.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -585,16 +593,16 @@ public class AdminPanel extends javax.swing.JFrame
                 btnFetchDataActionPerformed(evt);
             }
         });
-        pnlHome.add(btnFetchData, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 0, 120, -1));
+        pnlHome.add(btnFetchData, new org.netbeans.lib.awtextra.AbsoluteConstraints(940, 0, 120, -1));
 
         lblYear.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         lblYear.setForeground(new java.awt.Color(255, 0, 0));
-        pnlHome.add(lblYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 40, 70, 20));
+        pnlHome.add(lblYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 40, 70, 20));
 
         lblNoDataFound.setBackground(new java.awt.Color(255, 255, 255));
         lblNoDataFound.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
         lblNoDataFound.setForeground(java.awt.Color.red);
-        pnlHome.add(lblNoDataFound, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 60, 200, 30));
+        pnlHome.add(lblNoDataFound, new org.netbeans.lib.awtextra.AbsoluteConstraints(450, 60, 200, 30));
 
         btnHomeAddRider.setBackground(new java.awt.Color(102, 153, 255));
         btnHomeAddRider.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -647,7 +655,7 @@ public class AdminPanel extends javax.swing.JFrame
 
         lblSearchCustomerName.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
         lblSearchCustomerName.setForeground(java.awt.Color.red);
-        pnlHome.add(lblSearchCustomerName, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 30, 140, 30));
+        pnlHome.add(lblSearchCustomerName, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 40, 140, 30));
 
         btnRefresh.setBackground(new java.awt.Color(102, 153, 255));
         btnRefresh.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -660,7 +668,7 @@ public class AdminPanel extends javax.swing.JFrame
                 btnRefreshActionPerformed(evt);
             }
         });
-        pnlHome.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 460, -1, -1));
+        pnlHome.add(btnRefresh, new org.netbeans.lib.awtextra.AbsoluteConstraints(840, 460, -1, -1));
 
         btnDeleteAllPackages.setBackground(new java.awt.Color(102, 153, 255));
         btnDeleteAllPackages.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -674,7 +682,7 @@ public class AdminPanel extends javax.swing.JFrame
                 btnDeleteAllPackagesActionPerformed(evt);
             }
         });
-        pnlHome.add(btnDeleteAllPackages, new org.netbeans.lib.awtextra.AbsoluteConstraints(860, 460, 110, -1));
+        pnlHome.add(btnDeleteAllPackages, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 460, 110, -1));
 
         btnDeletePackage.setBackground(new java.awt.Color(102, 153, 255));
         btnDeletePackage.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -687,18 +695,18 @@ public class AdminPanel extends javax.swing.JFrame
                 btnDeletePackageActionPerformed(evt);
             }
         });
-        pnlHome.add(btnDeletePackage, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 60, 90, -1));
+        pnlHome.add(btnDeletePackage, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 60, 90, -1));
 
         pnlSuper.add(pnlHome, "card3");
 
-        pnlPackageEntry.setBackground(new java.awt.Color(148, 198, 247));
+        pnlPackageEntry.setBackground(new java.awt.Color(31, 184, 244));
         pnlPackageEntry.setMinimumSize(new java.awt.Dimension(1000, 510));
         pnlPackageEntry.setPreferredSize(new java.awt.Dimension(1000, 510));
         pnlPackageEntry.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Arial Black", 1, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(2, 63, 120));
-        jLabel1.setText("Enter A New Package Here:");
+        jLabel1.setText("Enter New Package Details:");
         pnlPackageEntry.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(6, 20, 610, -1));
 
         jLabel10.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
@@ -819,7 +827,7 @@ public class AdminPanel extends javax.swing.JFrame
 
         pnlSuper.add(pnlPackageEntry, "card3");
 
-        pnlAddVendor.setBackground(new java.awt.Color(148, 198, 247));
+        pnlAddVendor.setBackground(new java.awt.Color(31, 184, 244));
         pnlAddVendor.setToolTipText("");
         pnlAddVendor.setMinimumSize(new java.awt.Dimension(1000, 510));
         pnlAddVendor.setPreferredSize(new java.awt.Dimension(1000, 510));
@@ -827,8 +835,8 @@ public class AdminPanel extends javax.swing.JFrame
 
         jLabel3.setFont(new java.awt.Font("Arial Black", 1, 36)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(2, 63, 120));
-        jLabel3.setText("Add A New Vendor Here:");
-        pnlAddVendor.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 550, 40));
+        jLabel3.setText("Enter New Vendor Details:");
+        pnlAddVendor.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 30, 590, 40));
 
         jLabel15.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel15.setForeground(new java.awt.Color(2, 63, 120));
@@ -921,19 +929,19 @@ public class AdminPanel extends javax.swing.JFrame
 
         jSeparator9.setBackground(new java.awt.Color(2, 63, 120));
         jSeparator9.setOpaque(true);
-        pnlAddVendor.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 530, 5));
+        pnlAddVendor.add(jSeparator9, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 70, 570, 10));
 
         pnlSuper.add(pnlAddVendor, "card3");
 
-        pnlAddRider.setBackground(new java.awt.Color(148, 198, 247));
+        pnlAddRider.setBackground(new java.awt.Color(31, 184, 244));
         pnlAddRider.setMinimumSize(new java.awt.Dimension(1000, 510));
         pnlAddRider.setPreferredSize(new java.awt.Dimension(1000, 510));
         pnlAddRider.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel4.setFont(new java.awt.Font("Arial Black", 0, 36)); // NOI18N
         jLabel4.setForeground(new java.awt.Color(2, 63, 120));
-        jLabel4.setText("Add A New Rider Here:");
-        pnlAddRider.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 460, 40));
+        jLabel4.setText("Enter New Rider Details:");
+        pnlAddRider.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 490, 40));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         jLabel6.setForeground(new java.awt.Color(2, 63, 120));
@@ -1054,11 +1062,11 @@ public class AdminPanel extends javax.swing.JFrame
 
         jSeparator1.setBackground(new java.awt.Color(2, 63, 120));
         jSeparator1.setOpaque(true);
-        pnlAddRider.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 78, 450, 5));
+        pnlAddRider.add(jSeparator1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 78, 480, 5));
 
         pnlSuper.add(pnlAddRider, "card3");
 
-        pnlVendorDetails.setBackground(new java.awt.Color(148, 198, 247));
+        pnlVendorDetails.setBackground(new java.awt.Color(31, 184, 244));
         pnlVendorDetails.setMinimumSize(new java.awt.Dimension(1000, 510));
         pnlVendorDetails.setPreferredSize(new java.awt.Dimension(1000, 510));
         pnlVendorDetails.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -1101,7 +1109,7 @@ public class AdminPanel extends javax.swing.JFrame
             tblVendorDetail.getColumnModel().getColumn(4).setPreferredWidth(150);
         }
 
-        pnlVendorDetails.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 970, 410));
+        pnlVendorDetails.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 40, 980, 410));
 
         btnDeleteAllVendors.setBackground(new java.awt.Color(102, 153, 255));
         btnDeleteAllVendors.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -1126,11 +1134,11 @@ public class AdminPanel extends javax.swing.JFrame
                 btnDeleteVendorActionPerformed(evt);
             }
         });
-        pnlVendorDetails.add(btnDeleteVendor, new org.netbeans.lib.awtextra.AbsoluteConstraints(789, 460, 80, -1));
+        pnlVendorDetails.add(btnDeleteVendor, new org.netbeans.lib.awtextra.AbsoluteConstraints(779, 460, 90, -1));
 
         pnlSuper.add(pnlVendorDetails, "card3");
 
-        pnlRiderDetails.setBackground(new java.awt.Color(148, 198, 247));
+        pnlRiderDetails.setBackground(new java.awt.Color(31, 184, 244));
         pnlRiderDetails.setForeground(new java.awt.Color(255, 255, 255));
         pnlRiderDetails.setMinimumSize(new java.awt.Dimension(1000, 510));
         pnlRiderDetails.setPreferredSize(new java.awt.Dimension(1000, 510));
@@ -1180,7 +1188,7 @@ public class AdminPanel extends javax.swing.JFrame
         });
         jScrollPane2.setViewportView(tblRiderDetails);
 
-        pnlRiderDetails.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(266, 51, 710, 380));
+        pnlRiderDetails.add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 50, 780, 380));
 
         jLabel19.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel19.setForeground(new java.awt.Color(2, 63, 120));
@@ -1221,27 +1229,27 @@ public class AdminPanel extends javax.swing.JFrame
         jLabel23.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel23.setForeground(new java.awt.Color(2, 63, 120));
         jLabel23.setText("No. of Deliveries");
-        pnlRiderDetails.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 460, -1, -1));
+        pnlRiderDetails.add(jLabel23, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 460, -1, -1));
 
         tfNumOfDeliveries.setEditable(false);
-        pnlRiderDetails.add(tfNumOfDeliveries, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 450, 60, 33));
+        pnlRiderDetails.add(tfNumOfDeliveries, new org.netbeans.lib.awtextra.AbsoluteConstraints(620, 450, 60, 33));
 
         jLabel24.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel24.setForeground(new java.awt.Color(2, 63, 120));
-        jLabel24.setText("Demand Per Delivery");
-        pnlRiderDetails.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 460, -1, -1));
+        jLabel24.setText("Paid Per Delivery");
+        pnlRiderDetails.add(jLabel24, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 460, -1, -1));
 
         tfDemandPerDelivery.setEditable(false);
-        pnlRiderDetails.add(tfDemandPerDelivery, new org.netbeans.lib.awtextra.AbsoluteConstraints(410, 450, 60, 33));
+        pnlRiderDetails.add(tfDemandPerDelivery, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 450, 60, 33));
 
         jLabel25.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel25.setForeground(new java.awt.Color(2, 63, 120));
         jLabel25.setText("Salary");
-        pnlRiderDetails.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(680, 450, -1, 30));
+        pnlRiderDetails.add(jLabel25, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 450, -1, 30));
 
         tfSalary.setEditable(false);
         tfSalary.setFont(new java.awt.Font("Tahoma", 1, 24)); // NOI18N
-        pnlRiderDetails.add(tfSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(720, 450, 150, 33));
+        pnlRiderDetails.add(tfSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(770, 450, 150, 33));
 
         btnCalculateSalary.setBackground(new java.awt.Color(102, 153, 255));
         btnCalculateSalary.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
@@ -1255,7 +1263,7 @@ public class AdminPanel extends javax.swing.JFrame
                 btnCalculateSalaryActionPerformed(evt);
             }
         });
-        pnlRiderDetails.add(btnCalculateSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(880, 450, -1, 30));
+        pnlRiderDetails.add(btnCalculateSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(950, 450, -1, 30));
 
         mcRiderDetails.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
         pnlRiderDetails.add(mcRiderDetails, new org.netbeans.lib.awtextra.AbsoluteConstraints(280, 10, 120, 30));
@@ -1301,79 +1309,109 @@ public class AdminPanel extends javax.swing.JFrame
                 btnSalariesActionPerformed(evt);
             }
         });
-        pnlRiderDetails.add(btnSalaries, new org.netbeans.lib.awtextra.AbsoluteConstraints(890, 10, -1, -1));
+        pnlRiderDetails.add(btnSalaries, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 10, -1, -1));
 
         pnlSuper.add(pnlRiderDetails, "card3");
 
-        pnlMonthlyIncome.setBackground(new java.awt.Color(172, 145, 190));
+        pnlMonthlyIncome.setBackground(new java.awt.Color(31, 184, 244));
         pnlMonthlyIncome.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        jLabel8.setText("Monthly Income");
-        pnlMonthlyIncome.add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(442, 6, -1, -1));
 
         pnlBarChart.setLayout(new java.awt.BorderLayout());
         pnlMonthlyIncome.add(pnlBarChart, new org.netbeans.lib.awtextra.AbsoluteConstraints(250, 60, 810, 350));
 
         jLabel30.setBackground(new java.awt.Color(0, 0, 0));
         jLabel30.setFont(new java.awt.Font("Segoe UI", 1, 16)); // NOI18N
+        jLabel30.setForeground(new java.awt.Color(2, 63, 120));
         jLabel30.setText("Last Month's Summary");
-        pnlMonthlyIncome.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 50, 230, 30));
+        pnlMonthlyIncome.add(jLabel30, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 180, 30));
 
         jLabel31.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel31.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel31.setForeground(new java.awt.Color(2, 63, 120));
         jLabel31.setText("Total No. of Deliveries");
         pnlMonthlyIncome.add(jLabel31, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 140, 130, 30));
 
         lblTotalDeliveries.setBackground(new java.awt.Color(0, 0, 0));
+        lblTotalDeliveries.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblTotalDeliveries.setForeground(new java.awt.Color(2, 63, 120));
         lblTotalDeliveries.setText("jLabel");
         pnlMonthlyIncome.add(lblTotalDeliveries, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 140, 50, 30));
 
         jLabel32.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel32.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel32.setForeground(new java.awt.Color(2, 63, 120));
         jLabel32.setText("Total Cost of Deliveries");
         pnlMonthlyIncome.add(jLabel32, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 190, 140, 30));
 
         lblCostOfDeliveries.setBackground(new java.awt.Color(0, 0, 0));
+        lblCostOfDeliveries.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblCostOfDeliveries.setForeground(new java.awt.Color(2, 63, 120));
         lblCostOfDeliveries.setText("jLabel");
         pnlMonthlyIncome.add(lblCostOfDeliveries, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 190, 40, 30));
 
         jLabel33.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel33.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel33.setForeground(new java.awt.Color(2, 63, 120));
         jLabel33.setText("Sum of Delivery Charges");
         pnlMonthlyIncome.add(jLabel33, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 240, 140, 30));
 
         lblSumofDC.setBackground(new java.awt.Color(0, 0, 0));
+        lblSumofDC.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblSumofDC.setForeground(new java.awt.Color(2, 63, 120));
         lblSumofDC.setText("jLabel");
         pnlMonthlyIncome.add(lblSumofDC, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, 40, 30));
 
         jLabel35.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel35.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel35.setForeground(new java.awt.Color(2, 63, 120));
         jLabel35.setText("Sum of All Rider's Salary");
         pnlMonthlyIncome.add(jLabel35, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 290, 150, 30));
 
         lblSumOfRiderSalary.setBackground(new java.awt.Color(0, 0, 0));
+        lblSumOfRiderSalary.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblSumOfRiderSalary.setForeground(new java.awt.Color(2, 63, 120));
         lblSumOfRiderSalary.setText("jLabel");
         pnlMonthlyIncome.add(lblSumOfRiderSalary, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 290, 40, 30));
 
         jLabel37.setBackground(new java.awt.Color(0, 0, 0));
+        jLabel37.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel37.setForeground(new java.awt.Color(2, 63, 120));
         jLabel37.setText("Income");
         pnlMonthlyIncome.add(jLabel37, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 340, 60, 30));
 
         lblPreviousMonthIncome.setBackground(new java.awt.Color(0, 0, 0));
+        lblPreviousMonthIncome.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblPreviousMonthIncome.setForeground(new java.awt.Color(2, 63, 120));
         lblPreviousMonthIncome.setText("jLabel");
         pnlMonthlyIncome.add(lblPreviousMonthIncome, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 340, 40, 30));
 
         lblPreviousYear.setBackground(new java.awt.Color(255, 255, 255));
+        lblPreviousYear.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblPreviousYear.setForeground(new java.awt.Color(2, 63, 120));
         lblPreviousYear.setText("jLabel5");
         pnlMonthlyIncome.add(lblPreviousYear, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 110, -1, 20));
 
         jLabel7.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel7.setForeground(new java.awt.Color(2, 63, 120));
         jLabel7.setText("Month : ");
         pnlMonthlyIncome.add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, -1, -1));
 
         lblPreviousMonth.setBackground(new java.awt.Color(255, 255, 255));
+        lblPreviousMonth.setFont(new java.awt.Font("Segoe UI", 0, 12)); // NOI18N
+        lblPreviousMonth.setForeground(new java.awt.Color(2, 63, 120));
         lblPreviousMonth.setText("jLabel5");
         pnlMonthlyIncome.add(lblPreviousMonth, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, -1, -1));
 
         jLabel36.setBackground(new java.awt.Color(255, 255, 255));
+        jLabel36.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        jLabel36.setForeground(new java.awt.Color(2, 63, 120));
         jLabel36.setText("Year : ");
         pnlMonthlyIncome.add(jLabel36, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 110, -1, -1));
+
+        jSeparator13.setBackground(new java.awt.Color(0, 0, 0));
+        jSeparator13.setForeground(new java.awt.Color(2, 63, 120));
+        pnlMonthlyIncome.add(jSeparator13, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 70, 170, 10));
 
         pnlSuper.add(pnlMonthlyIncome, "card3");
 
@@ -1384,7 +1422,7 @@ public class AdminPanel extends javax.swing.JFrame
         pnlLogo.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel9.setIcon(new javax.swing.ImageIcon(getClass().getResource("/framespackage/logoBike.png"))); // NOI18N
-        pnlLogo.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 0, -1, 88));
+        pnlLogo.add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 0, -1, 88));
 
         lblHeading.setBackground(new java.awt.Color(63, 63, 63));
         lblHeading.setFont(new java.awt.Font("Segoe UI", 0, 36)); // NOI18N
@@ -1510,6 +1548,7 @@ public class AdminPanel extends javax.swing.JFrame
         );
 
         pack();
+        setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
     private void lblPackageEntryMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_lblPackageEntryMouseClicked
@@ -2363,7 +2402,6 @@ public class AdminPanel extends javax.swing.JFrame
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -2375,6 +2413,7 @@ public class AdminPanel extends javax.swing.JFrame
     private javax.swing.JPopupMenu.Separator jSeparator10;
     private javax.swing.JPopupMenu.Separator jSeparator11;
     private javax.swing.JPopupMenu.Separator jSeparator12;
+    private javax.swing.JSeparator jSeparator13;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
     private javax.swing.JSeparator jSeparator4;
